@@ -33,14 +33,14 @@ class Movies extends Component {
     return (
       <React.Fragment>
         <p
-          className="badge badge-secondary"
-          style={{ color: "white", fontSize: "20px" }}
+          className="badge badge-warning"
+          style={{ color: "black", fontSize: "20px" }}
         >
           There are <span className="badge badge-dark badge-pill">{count}</span>{" "}
           Movies in database.
         </p>
-        <table className="table table-dark table-hover">
-          <thead>
+        <table className="table table-secondary table-hover">
+          <thead className="thead-dark">
             <tr>
               <th>Title</th>
               <th>Genre</th>
@@ -66,7 +66,7 @@ class Movies extends Component {
                 <td>
                   <button
                     onClick={() => this.handleDelete(movie)}
-                    className="btn btn-danger"
+                    className="btn btn-danger btn-sm"
                   >
                     Delete
                   </button>
