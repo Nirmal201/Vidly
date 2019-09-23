@@ -42,6 +42,25 @@ class Movies extends Component {
   handleSort = sortColumn => {
     this.setState({ sortColumn });
   };
+  getPageData = () => {
+    const {
+      pageSize,
+      currentPage,
+      sortColumn,
+      selectedGenre,
+      movies: allMovies
+    } = this.state;
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
+        : allMovies;
+
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+    const movies = paginate(sorted, currentPage, pageSize);
+
+    return { totalCount: filtered.length, data: movies };
+  };
 
   render() {
     const { length: count } = this.state.movies;
@@ -49,7 +68,7 @@ class Movies extends Component {
       pageSize,
       currentPage,
       sortColumn,
-      movies: allMovies,
+      // movies: allMovies,
       selectedGenre,
       genres
     } = this.state;
@@ -63,15 +82,8 @@ class Movies extends Component {
           There are no movies in the Database
         </p>
       );
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
-        : allMovies;
 
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
-
-    const movies = paginate(sorted, currentPage, pageSize);
-
+    const { totalCount, data: movies } = this.getPageData();
     return (
       <div className="row">
         <div className="col-2">
@@ -88,9 +100,7 @@ class Movies extends Component {
             style={{ color: "black", fontSize: "20px" }}
           >
             There are{" "}
-            <span className="badge badge-dark badge-pill">
-              {filtered.length}
-            </span>
+            <span className="badge badge-dark badge-pill">{totalCount}</span>
             Movies in database.
           </p>
           <MoviesTable
@@ -101,7 +111,7 @@ class Movies extends Component {
             onSort={this.handleSort}
           />
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
